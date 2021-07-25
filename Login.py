@@ -1,6 +1,9 @@
+import abc
 import tkinter
 from tkinter import *
 from tkinter import messagebox
+import pymysql
+from pymysql import *
 
 
 def PantallaPrincipal():
@@ -29,15 +32,97 @@ def PantallaPrincipal():
 
 def RegistroPaciente():
     global registro
+    global numerodocumento
+    global fecha_ingreso
+    global horaingreso
+    global nombres
+    global apellidos
+    global sexo
+    global edad
+    global RH
+    global presiónarterial
+
+    numerodocumento=int()
+    fecha_ingreso=StringVar()
+    horaingreso=StringVar()
+    nombres=StringVar()
+    apellidos=StringVar()
+    sexo=StringVar()
+    edad=StringVar()
+    RH=StringVar()
+    presiónarterial=StringVar()
+
     registro = Toplevel(form1)
-    registro.geometry("400x250")
+    registro.geometry("800x500")
     registro.title("Registro de Pacientes")
     registro.iconbitmap("ico.ico")
+    registro.config(bg="#12A5AC")
 
-    Label(registro, text="Datos de paciente").pack()
-    Label(registro, text="").pack()
+    Label(registro, text="Datos del Paciente", bg="#12A5AC", fg="white", font=("arial", 16)).pack()
+    
 
-   
+    Label(registro, text="Fecha de ingreso", bg="#12A5AC", fg="white").pack()
+    fecha_ingreso = Entry(registro, textvariable=fecha_ingreso)
+    fecha_ingreso.pack()
+
+    Label(registro, text="Hora de Ingreso", bg="#12A5AC", fg="white").pack()
+    horaingreso = Entry(registro, textvariable=horaingreso)
+    horaingreso.pack()
+
+    Label(registro, text="Número de indentificación", bg="#12A5AC", fg="white").pack()
+    numerodocumento = Entry(registro, textvariable=numerodocumento)
+    numerodocumento.pack()
+
+    Label(registro, text="Nombres: ", bg="#12A5AC", fg="white").pack()
+    nombres = Entry(registro, textvariable=nombres)
+    nombres.pack()
+
+    Label(registro, text="Apellidos: ", bg="#12A5AC", fg="white").pack()
+    apellidos = Entry(registro, textvariable=apellidos)
+    apellidos.pack()
+
+    Label(registro, text="Sexo: ", bg="#12A5AC", fg="white").pack()
+    sexo = Entry(registro, textvariable=sexo)
+    sexo.pack()
+
+    Label(registro, text="Edad: ", bg="#12A5AC", fg="white").pack()
+    edad = Entry(registro, textvariable=edad)
+    edad.pack()
+
+    Label(registro, text="RH: ", bg="#12A5AC", fg="white").pack()
+    RH = Entry(registro, textvariable=RH)
+    RH.pack()
+
+    Label(registro, text="Presión Arterial ", bg="#12A5AC", fg="white").pack()
+    presiónarterial = Entry(registro, textvariable=presiónarterial)
+    presiónarterial.pack()
+
+
+    Button(registro, text="Guardar", command=guarda_info).pack()
+
+def guarda_info():
+    savebd=pymysql.connect(
+        host="localhost",
+        user="root",
+        passwd="Pa55w.rd",
+        db="proyectofinal"
+    )
+    fcursor=savebd.cursor()
+
+    sql="INSERT INTO registro (numerodocumento, fecha_ingreso, horaingreso, nombres, apellidos, sexo, edad, RH, presiónarterial) VALUES('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')".format(fecha_ingreso.get(), horaingreso.get(), nombres.get(), apellidos.get(), sexo.get(), edad.get(), RH.get(), presiónarterial.get())
+
+    try: 
+        #Ejecución:
+        fcursor.execute(sql)
+        savebd.commit()
+        messagebox.showinfo(message="Se han guardado los datos", title="Información")
+
+    except:
+        savebd.rollback()
+        messagebox.showinfo(message="No se han podido guardar los datos", title="Error")
+    
+    savebd.close()
+
 
 
 def login():
@@ -57,9 +142,12 @@ def login():
     global valida_nameuser
     global valida_claveuser
 
-    valida_nameuser=StringVar()
-    valida_claveuser=StringVar()
+    valida_nameuser= StringVar()
+    valida_claveuser= StringVar()
 
+
+#Validar variables globales que se estan usando para adicion de usuario y autenticació#
+    
     global name_user_intro
     global clave_user_intro
 
@@ -75,10 +163,28 @@ def login():
     Label(ingreso, text=" ", bg="#12A5AC").pack()
 
 
-    Button(ingreso, text="Ingresar", font=("arial", 12)).pack()
+    Button(ingreso, text="Ingresar", font=("arial", 12), command=inises).pack()
   
 
-   
+def inises():
+    bd=pymysql.connect(
+        host="localhost",
+        user="root",
+        passwd="Pa55w.rd",
+        db="proyectofinal"
+    )
+    fcursor=bd.cursor()
+
+    fcursor.execute("SELECT contrasena FROM login WHERE usuario='"+valida_nameuser+"' and contrasena ='"+valida_claveuser+"'")
+    if fcursor.fetchall():
+        messagebox.showinfo(title="Inicio de sesión correcto", message="Usuario y clave correcta")
+    
+    else:
+        messagebox.showinfo(title="error", message="No se a podido iniciar sesión")
+    
+    bd.close()
+
+
 
 
 
