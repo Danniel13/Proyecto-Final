@@ -1,4 +1,3 @@
-import abc
 import tkinter
 from tkinter import *
 from tkinter import messagebox
@@ -39,17 +38,18 @@ def RegistroPaciente():
     global apellidos
     global sexo
     global edad
-    global RH
+    global sangre
     global presiónarterial
 
-    numerodocumento=int()
+   
     fecha_ingreso=StringVar()
     horaingreso=StringVar()
+    numerodocumento=int()
     nombres=StringVar()
     apellidos=StringVar()
     sexo=StringVar()
     edad=StringVar()
-    RH=StringVar()
+    sangre=StringVar()
     presiónarterial=StringVar()
 
     registro = Toplevel(form1)
@@ -61,40 +61,40 @@ def RegistroPaciente():
     Label(registro, text="Datos del Paciente", bg="#12A5AC", fg="white", font=("arial", 16)).pack()
     
 
+    Label(registro, text="Número de indentificación", bg="#12A5AC", fg="white").pack()
+    numerodocumento = Entry(registro)
+    numerodocumento.pack()
+
     Label(registro, text="Fecha de ingreso", bg="#12A5AC", fg="white").pack()
-    fecha_ingreso = Entry(registro, textvariable=fecha_ingreso)
+    fecha_ingreso = Entry(registro)
     fecha_ingreso.pack()
 
     Label(registro, text="Hora de Ingreso", bg="#12A5AC", fg="white").pack()
-    horaingreso = Entry(registro, textvariable=horaingreso)
+    horaingreso = Entry(registro)
     horaingreso.pack()
 
-    Label(registro, text="Número de indentificación", bg="#12A5AC", fg="white").pack()
-    numerodocumento = Entry(registro, textvariable=numerodocumento)
-    numerodocumento.pack()
-
     Label(registro, text="Nombres: ", bg="#12A5AC", fg="white").pack()
-    nombres = Entry(registro, textvariable=nombres)
+    nombres = Entry(registro)
     nombres.pack()
 
     Label(registro, text="Apellidos: ", bg="#12A5AC", fg="white").pack()
-    apellidos = Entry(registro, textvariable=apellidos)
+    apellidos = Entry(registro)
     apellidos.pack()
 
     Label(registro, text="Sexo: ", bg="#12A5AC", fg="white").pack()
-    sexo = Entry(registro, textvariable=sexo)
+    sexo = Entry(registro)
     sexo.pack()
 
     Label(registro, text="Edad: ", bg="#12A5AC", fg="white").pack()
-    edad = Entry(registro, textvariable=edad)
+    edad = Entry(registro)
     edad.pack()
 
     Label(registro, text="RH: ", bg="#12A5AC", fg="white").pack()
-    RH = Entry(registro, textvariable=RH)
-    RH.pack()
+    sangre = Entry(registro)
+    sangre.pack()
 
     Label(registro, text="Presión Arterial ", bg="#12A5AC", fg="white").pack()
-    presiónarterial = Entry(registro, textvariable=presiónarterial)
+    presiónarterial = Entry(registro)
     presiónarterial.pack()
 
 
@@ -108,8 +108,9 @@ def guarda_info():
         db="proyectofinal"
     )
     fcursor=savebd.cursor()
+    
+    sql= "INSERT INTO registro (numerodocumento, fecha_ingreso, horaingreso, nombres, apellidos, sexo, edad, RH, presionarterial) VALUES('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')".format(numerodocumento.get(), fecha_ingreso.get(), horaingreso.get(), nombres.get(), apellidos.get(), sexo.get(), edad.get(), sangre.get(), presiónarterial.get())
 
-    sql="INSERT INTO registro (numerodocumento, fecha_ingreso, horaingreso, nombres, apellidos, sexo, edad, RH, presiónarterial) VALUES('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')".format(fecha_ingreso.get(), horaingreso.get(), nombres.get(), apellidos.get(), sexo.get(), edad.get(), RH.get(), presiónarterial.get())
 
     try: 
         #Ejecución:
@@ -142,8 +143,8 @@ def login():
     global valida_nameuser
     global valida_claveuser
 
-    valida_nameuser= StringVar()
-    valida_claveuser= StringVar()
+    valida_nameuser= str()
+    valida_claveuser= str()
 
 
 #Validar variables globales que se estan usando para adicion de usuario y autenticació#
@@ -174,14 +175,16 @@ def inises():
         db="proyectofinal"
     )
     fcursor=bd.cursor()
-
+    
     fcursor.execute("SELECT contrasena FROM login WHERE usuario='"+valida_nameuser+"' and contrasena ='"+valida_claveuser+"'")
     if fcursor.fetchall():
         messagebox.showinfo(title="Inicio de sesión correcto", message="Usuario y clave correcta")
-    
+        
     else:
         messagebox.showinfo(title="error", message="No se a podido iniciar sesión")
-    
+   
+  
+   
     bd.close()
 
 
