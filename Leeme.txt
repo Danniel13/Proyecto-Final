@@ -1,0 +1,5 @@
+--APP Sistema de Monitoreo y control de pacientes en una Unidad de cuidados intensivos.  --
+- Montar Base de datos
+- Ejecutar main.py 
+
+--
